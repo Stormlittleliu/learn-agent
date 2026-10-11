@@ -1,4 +1,4 @@
-# MyAgent — 从零手写一个 Claude Code
+# 学习 Agent 项目(learn-agent)— 从零手写一个 Claude Code
 
 > 一个关于 Claude Code 内部机制的学习项目:20 个章节,每章只加一个机制,最终合成一个完整可运行的 coding agent。
 >

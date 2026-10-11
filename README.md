@@ -10,6 +10,8 @@
 
 这是一个**学习项目**(非生产系统),目标是搞懂 Claude Code 这类 coding agent 的内部机制:工具分发、权限、hooks、todo、子 agent、技能、记忆、上下文压缩、错误恢复、任务图、后台任务、cron、团队与协议、worktree、MCP。
 
+> **项目来源**:基于 [shareAI-lab/learn-claude-code](https://github.com/shareAI-lab/learn-claude-code)(MIT License)的第 20 章终章 `s20_comprehensive` 修改而来,详见下方[与原项目的关系](#与原项目的关系)。
+
 一切从最小循环出发:
 
 ```python
@@ -22,6 +24,25 @@ while True:
 ```
 
 从 s01 到 s20,代码表面越来越复杂,但核心始终没变。Claude Code 的复杂性不是"另一个 agent 大脑",而是一个成熟 harness 的复杂性:**模型负责判断和行动选择,harness 负责把环境、工具、权限、记忆、团队和外部能力组织好。**
+
+## 与原项目的关系
+
+本项目基于 [shareAI-lab/learn-claude-code](https://github.com/shareAI-lab/learn-claude-code)(MIT License)的 **s20 终章**版本,在其基础上做了两类改动:
+
+**1. Bug 修复**
+
+- [FIX-1] 系统 prompt 与队友 prompt 中注入平台提示(Windows 环境下 shell 工具需明确使用 PowerShell)
+- [FIX-2] `run_bash` / `run_git` / `_count_worktree_changes` 手动解码输出并捕获**所有**异常,工具报错不再中断主循环
+- [FIX-3] `run_read` 依次尝试多种编码读取文件
+- [FIX-4] 所有文件读写显式指定 `encoding="utf-8"`
+- [FIX-5] 工具处理器调用统一包装异常(Lead、teammate、subagent 三处)
+- [FIX-6] `MessageBus.read_inbox` 容忍 Windows 文件锁导致的 unlink 失败
+
+**2. Windows 环境适配**
+
+原项目面向 Unix 环境,本项目已适配 Windows(bash 工具走 PowerShell、路径/编码/文件锁问题均已处理),可在 Windows 10/11 上直接运行。
+
+完整修复清单见 [`s20_comprehensive/code.py`](s20_comprehensive/code.py) 文件头部注释;课程章节(web 课程站、章节 README)保持上游原样未动。
 
 ## 目录结构
 
@@ -102,5 +123,6 @@ pytest tests/
 
 ## 说明
 
-- 代码以教学可读性优先,已针对 Windows 环境做适配(s20 `code.py` 头部记录了修复清单)。
+- 本项目遵循上游 [shareAI-lab/learn-claude-code](https://github.com/shareAI-lab/learn-claude-code) 的 MIT 许可,原版权声明保留在 [LICENSE](LICENSE) 中。
+- 代码以教学可读性优先,细节改动见上文[与原项目的关系](#与原项目的关系)。
 - 技能(`skills/`)为课程配套练习:agent-builder 教如何设计 agent,code-review 教如何审查代码,mcp-builder 教如何写 MCP server,pdf 教如何处理 PDF。
